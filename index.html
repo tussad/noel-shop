@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop Noel</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://source.unsplash.com/1600x900/?christmas,night') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
+      color: white;
+    }
+    header {
+      background: linear-gradient(to right, #b71c1c, #880e4f);
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+    }
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .navbar ul li a {
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .product-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+    }
+    .product {
+      border: 2px solid #ff1744;
+      padding: 20px;
+      text-align: center;
+      width: 200px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+    }
+    .product img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .price {
+      color: #ff5252;
+    }
+    button {
+      background-color: #388e3c;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    #snowfall {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hiệu ứng tuyết rơi -->
+  <div id="snowfall"></div>
+
+  <!-- Thanh điều hướng -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <span>
+          🎄 <strong>Shop Noel</strong> 🎅
+        </span>
+      </div>
+      <ul class="menu">
+        <li><a href="#" id="home">Trang Chủ</a></li>
+        <li><a href="#" id="products">Sản Phẩm</a></li>
+        <li><a href="#" id="cart">Giỏ Hàng</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Nội dung chính -->
+  <main id="main-content">
+    <h1 class="title">Sản Phẩm</h1>
+    <div class="product-container">
+      <div class="product">
+        <img src="kimbap-chay-1024x683.jpg" alt="kimbap">
+        <h3>Cây Thông Noel</h3>
+        <p class="price">Giá: <strong>10.000đ</strong></p>
+        <button onclick="addToCart('kimap', 10.000)">Thêm vào giỏ</button>
+      </div>
+      <div class="product">
+        <img src="cach-lam-banh-quy-socola-nhanh-chong-don-gian-bang-7.jpg" alt="bánh quy">
+        <h3>Hộp Quà Noel</h3>
+        <p class="price">Giá: <strong>10000</strong></p>
+        <button onclick="addToCart('bánh quy', 10000)">Thêm vào giỏ</button>
+      </div>
+      <div class="product">
+        <img src="https://source.unsplash.com/200x150/?christmas-lights" alt="Đèn Trang Trí Noel">
+        <h3>Đèn Trang Trí Noel</h3>
+        <p class="price">Giá: <strong>200.000đ</strong></p>
+        <button onclick="addToCart('Đèn Trang Trí Noel', 200000)">Thêm vào giỏ</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let cart = [];
+
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      document.getElementById('snowfall').appendChild(snowflake);
+
+      const size = Math.random() * 10 + 5;
+      const startPos = Math.random() * window.innerWidth;
+      const duration = Math.random() * 5 + 2;
+      const opacity = Math.random();
+
+      snowflake.style.width = `${size}px`;
+      snowflake.style.height = `${size}px`;
+      snowflake.style.left = `${startPos}px`;
+      snowflake.style.animation = `fall ${duration}s linear infinite`;
+      snowflake.style.opacity = opacity;
+      snowflake.style.background = 'white';
+      snowflake.style.borderRadius = '50%';
+
+      setTimeout(() => {
+        snowflake.remove();
+      }, duration * 1000);
+    }
+
+    setInterval(createSnowflake, 30);
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes fall {
+        0% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(100vh);
+        }
+      }
+      .snowflake {
+        position: absolute;
+        top: 0;
+        user-select: none;
+        pointer-events: none;
+        animation: fall linear infinite;
+      }
+    `;
+    document.head.appendChild(style);
+
+    function addToCart(product, price) {
+      cart.push({ product, price });
+      alert(`${product} đã được thêm vào giỏ hàng!`);
+    }
+
+    document.getElementById('home').addEventListener('click', () => {
+      location.reload();
+    });
+
+    document.getElementById('products').addEventListener('click', () => {
+      document.getElementById('main-content').innerHTML = document.querySelector('.product-container').outerHTML;
+    });
+
+    document.getElementById('cart').addEventListener('click', () => {
+      let cartHtml = '<h1>Giỏ Hàng</h1><ul>';
+      cart.forEach(item => {
+        cartHtml += `<li>${item.product} - ${item.price.toLocaleString()}đ</li>`;
+      });
+      cartHtml += '</ul>';
+      document.getElementById('main-content').innerHTML = cartHtml;
+    });
+  </script>
+</body>
+</html>
